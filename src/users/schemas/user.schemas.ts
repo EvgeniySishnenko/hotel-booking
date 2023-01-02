@@ -8,7 +8,7 @@ export class User {
   @Prop()
   public email: string;
   @Prop()
-  public passwordHash: string;
+  public password: string;
   @Prop()
   public contactPhone: string;
   @Prop()
