@@ -19,6 +19,13 @@ export class HotelService {
     const skip = Number(params.offset) || 0;
     const limit = Number(params.limit) || 6;
 
-    return this.hotelModel.find().skip(skip).limit(limit).exec();
+    return this.hotelModel
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .select('-updatedAt') //this doens't affect the data coming from the bookids-documents
+      .select('-__v')
+      .select('-createdAt')
+      .exec();
   }
 }
