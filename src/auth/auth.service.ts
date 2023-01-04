@@ -19,29 +19,43 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private async validateUser(loginDTO: LoginDTO) {
-    if (!loginDTO) {
-      throw new UnauthorizedException({
-        message: 'Данные должны быть заполненны',
-      });
-    }
-    const user = await this.userService.findByEmail(loginDTO.email);
+  async validateUser(loginDTO: LoginDTO) {
+    // if (!loginDTO) {
+    //   throw new UnauthorizedException({
+    //     message: 'Данные должны быть заполненны',
+    //   });
+    // }
+    // console.log('loginDTO-validateUser', loginDTO);
 
-    if (!user) {
-      throw new UnauthorizedException({
-        message: 'Не корректный email или пароль',
-      });
+    // const user = await this.userService.findByEmail(loginDTO.email);
+    // console.log('user-validateUser', user);
+
+    // if (!user) {
+    //   throw new UnauthorizedException({
+    //     message: 'Не корректный email или пароль',
+    //   });
+    // }
+
+    // const passwordEquals = await bcrypt.compare(
+    //   loginDTO?.password,
+    //   user?.password,
+    // );
+
+    // if (user && passwordEquals) {
+    //   return user;
+    // }
+    // throw new UnauthorizedException({
+    //   message: 'Не корректный email или пароль',
+    // });
+
+    try {
+      const user = await this.userService.findByEmail(loginDTO.email);
+      if (user) {
+        return user;
+      }
+    } catch (error) {
+      return error;
     }
-    const passwordEquals = await bcrypt.compare(
-      loginDTO.password,
-      user.password,
-    );
-    if (user && passwordEquals) {
-      return user;
-    }
-    throw new UnauthorizedException({
-      message: 'Не корректный email или пароль',
-    });
   }
   /** не знаю какой тип прописать для user. на ID ругается */
   private async generateToken(user: any) {
@@ -55,6 +69,7 @@ export class AuthService {
       token: this.jwtService.sign(payload),
     };
   }
+
   async registration(userDTO: CreateUserDTO) {
     if (!userDTO) {
       throw {
