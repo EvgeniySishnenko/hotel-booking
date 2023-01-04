@@ -15,7 +15,7 @@ export class UsersService {
   // async findById(id: ID): Promise<User> {}
   // async findAll(params: SearchUserParams): Promise<User[]> {}
   async create(data: Partial<CreateUserDTO>) {
-    const newUser = new this.UserModel({ ...data, role: 'client' });
+    const newUser = new this.UserModel(data);
     return await newUser.save();
   }
   async findByEmail(email: string): Promise<User> {
