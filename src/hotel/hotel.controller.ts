@@ -35,11 +35,8 @@ export class HotelController {
     }
   }
 
-  //   interface SearchHotelParams {
-  //   limit: number;
-  //   offset: number;
-  //   title: string;
-  // }
+  /** еще guard нужен- 403 - если роль пользователя не admin. */
+  @UseGuards(JwtAuthGuard)
   @Get('/api/admin/hotels')
   async getHotels(@Query() params: IFindSearchParams) {
     try {
