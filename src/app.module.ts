@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,12 +17,15 @@ import { HotelRoomModule } from './hotel-room/hotel-room.module';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_CONNECT),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../public/images'),
+    }),
     UsersModule,
     AuthModule,
     HotelModule,
     HotelRoomModule,
   ],
-  controllers: [AppController, HotelController],
-  providers: [AppService, HotelRoomService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -8,9 +8,9 @@ import {
   Query,
   UseGuards,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { AddHotelParamsDTO } from './dto/add.hotel.params.dto';
 import { UpdateHotelParamsDTO } from './dto/update.hotel.params.dto';
 import { HotelService } from './hotel.service';
@@ -38,7 +38,7 @@ export class HotelController {
   }
 
   /** еще guard нужен- 403 - если роль пользователя не admin. */
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/api/admin/hotels')
   async getHotels(@Query() params: IFindSearchParams) {
     try {
