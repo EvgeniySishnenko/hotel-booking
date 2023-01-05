@@ -50,8 +50,8 @@ export class HotelController {
   }
 
   /** еще guard нужен- 403 - если роль пользователя не admin. */
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidationPipe)
+  // @UseGuards(JwtAuthGuard)
+  // @UsePipes(ValidationPipe)
   @Put('/api/admin/hotels/:id')
   async updateHotel(
     @Body() updateHotelParamsDTO: UpdateHotelParamsDTO,
@@ -62,7 +62,6 @@ export class HotelController {
         updateHotelParamsDTO,
         id,
       );
-      console.log(hotel);
 
       return {
         id: hotel._id,

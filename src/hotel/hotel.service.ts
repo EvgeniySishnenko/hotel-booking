@@ -20,6 +20,7 @@ export class HotelService {
 
   async getHotels(params: IFindSearchParams) {
     const skip = Number(params.offset) || 0;
+
     const limit = Number(params.limit) || 6;
 
     return this.hotelModel

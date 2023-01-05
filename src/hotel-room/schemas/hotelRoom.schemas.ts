@@ -8,7 +8,7 @@ export class HotelRoom {
   @Prop({ required: true })
   public description: string;
   @Prop({ ref: 'Hotel', required: true })
-  public hotel: ObjectId;
+  public hotel: string;
   @Prop()
   public images: string[];
   @Prop()
