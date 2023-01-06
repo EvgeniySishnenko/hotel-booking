@@ -27,7 +27,7 @@ export class HotelService {
       .find()
       .skip(skip)
       .limit(limit)
-      .select('-updatedAt') //this doens't affect the data coming from the bookids-documents
+      .select('-updatedAt')
       .select('-__v')
       .select('-createdAt')
       .exec();
@@ -37,5 +37,14 @@ export class HotelService {
     return await this.hotelModel.findByIdAndUpdate(id, updateHotelParamsDTO, {
       new: true,
     });
+  }
+
+  async findById(id: string) {
+    return await this.hotelModel
+      .findById(id)
+      .select('-updatedAt')
+      .select('-__v')
+      .select('-createdAt')
+      .exec();
   }
 }

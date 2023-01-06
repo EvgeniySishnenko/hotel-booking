@@ -21,12 +21,14 @@ export class HotelController {
   constructor(private hotelService: HotelService) {}
 
   /** еще guard нужен- 403 - если роль пользователя не admin. */
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(ValidationPipe)
+  // @UseGuards(JwtAuthGuard)
+  // @UsePipes(ValidationPipe)
   @Post('/api/admin/hotels')
   async addHotel(@Body() addHotelDTO: AddHotelParamsDTO) {
     try {
       const hotel = await this.hotelService.addHotel(addHotelDTO);
+      console.log('hotel', hotel);
+
       return {
         id: hotel._id,
         title: hotel.title,
