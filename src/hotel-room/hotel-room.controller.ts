@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Put,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -13,6 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 
 import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
+import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateHotelRoomDTo } from './dto/create.hotel.room.dto';
 import { HotelRoomService } from './hotel-room.service';
@@ -36,8 +39,10 @@ export class HotelRoomController {
     }
   }
 
-  async getHotelRooms() {
-    // return await this.hotelRoomService.getHotelRooms();
+  /** В Этом методе нужно добавить проверку на isEnabled */
+  @Get('/api/common/hotel-rooms')
+  async getHotelRooms(@Query() params: IFindSearchParams, @Req() req: Request) {
+    return await this.hotelRoomService.getHotelRooms(params);
   }
 
   //   findById(id: ID): Promise<HotelRoom>;

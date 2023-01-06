@@ -42,7 +42,7 @@ export class HotelController {
   /** еще guard нужен- 403 - если роль пользователя не admin. */
   // @UseGuards(JwtAuthGuard)
   @Get('/api/admin/hotels')
-  async getHotels(@Query() params: IFindSearchParams) {
+  async getHotels(@Query() params: Omit<IFindSearchParams, 'hotel'>) {
     try {
       const hotels = await this.hotelService.getHotels(params);
       return hotels;

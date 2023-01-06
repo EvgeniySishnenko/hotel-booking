@@ -18,9 +18,8 @@ export class HotelService {
     return await newHotel.save();
   }
 
-  async getHotels(params: IFindSearchParams) {
+  async getHotels(params: Omit<IFindSearchParams, 'hotel'>) {
     const skip = Number(params.offset) || 0;
-
     const limit = Number(params.limit) || 6;
 
     return this.hotelModel

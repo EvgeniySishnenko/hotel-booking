@@ -38,4 +38,22 @@ export class HotelRoomService {
       return { error };
     }
   }
+
+  async getHotelRooms(params) {
+    const skip = Number(params.offset) || 0;
+    const limit = Number(params.limit) || 6;
+    try {
+      return await this.hotelRoomModel
+        .find({ hotel: { _id: params.hotel } })
+        .skip(skip)
+        .limit(limit)
+        .select('-updatedAt')
+        .select('-__v')
+        .select('-createdAt')
+        .select('-isEnabled')
+        .exec();
+    } catch (error) {
+      return error;
+    }
+  }
 }
