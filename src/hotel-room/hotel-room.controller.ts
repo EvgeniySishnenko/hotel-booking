@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -39,9 +40,18 @@ export class HotelRoomController {
     }
   }
 
+  @Get('/api/common/hotel-rooms/:id')
+  async getHotelRoom(@Param('id') id: string) {
+    try {
+      return await this.hotelRoomService.getHotelRoom(id);
+    } catch (error) {
+      return error;
+    }
+  }
+
   /** В Этом методе нужно добавить проверку на isEnabled */
   @Get('/api/common/hotel-rooms')
-  async getHotelRooms(@Query() params: IFindSearchParams, @Req() req: Request) {
+  async getHotelRooms(@Query() params: IFindSearchParams) {
     return await this.hotelRoomService.getHotelRooms(params);
   }
 

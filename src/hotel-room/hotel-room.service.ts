@@ -56,4 +56,18 @@ export class HotelRoomService {
       return error;
     }
   }
+
+  async getHotelRoom(id: string) {
+    try {
+      return await this.hotelRoomModel
+        .findById(id)
+        .select('-updatedAt')
+        .select('-__v')
+        .select('-createdAt')
+        .select('-isEnabled')
+        .exec();
+    } catch (error) {
+      return error;
+    }
+  }
 }
