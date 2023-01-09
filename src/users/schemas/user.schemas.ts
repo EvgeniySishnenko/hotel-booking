@@ -1,5 +1,7 @@
+import { RouterModule } from '@nestjs/core';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Role } from '../enums/roles.enum';
 
 export type UserDocument = User & Document;
 
@@ -13,7 +15,7 @@ export class User {
   public contactPhone: string;
   @Prop({ required: true })
   public lastName: string;
-  @Prop({ required: true, default: 'client' })
+  @Prop({ required: true, default: Role.Client })
   public role: string;
 }
 

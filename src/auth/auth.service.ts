@@ -20,34 +20,6 @@ export class AuthService {
   }
 
   async validateUser(loginDTO: LoginDTO) {
-    // if (!loginDTO) {
-    //   throw new UnauthorizedException({
-    //     message: 'Данные должны быть заполненны',
-    //   });
-    // }
-    // console.log('loginDTO-validateUser', loginDTO);
-
-    // const user = await this.userService.findByEmail(loginDTO.email);
-    // console.log('user-validateUser', user);
-
-    // if (!user) {
-    //   throw new UnauthorizedException({
-    //     message: 'Не корректный email или пароль',
-    //   });
-    // }
-
-    // const passwordEquals = await bcrypt.compare(
-    //   loginDTO?.password,
-    //   user?.password,
-    // );
-
-    // if (user && passwordEquals) {
-    //   return user;
-    // }
-    // throw new UnauthorizedException({
-    //   message: 'Не корректный email или пароль',
-    // });
-
     try {
       const user = await this.userService.findByEmail(loginDTO.email);
       if (user) {

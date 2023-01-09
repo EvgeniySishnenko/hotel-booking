@@ -13,7 +13,6 @@ export class HotelRoomService {
     @InjectModel(HotelRoom.name)
     private hotelRoomModel: Model<HotelRoomDocument>,
     private hotelService: HotelService,
-
     @InjectConnection() private connection: Connection,
   ) {}
 
@@ -42,6 +41,7 @@ export class HotelRoomService {
   async getHotelRooms(params) {
     const skip = Number(params.offset) || 0;
     const limit = Number(params.limit) || 6;
+
     try {
       return await this.hotelRoomModel
         .find({ hotel: { _id: params.hotel } })

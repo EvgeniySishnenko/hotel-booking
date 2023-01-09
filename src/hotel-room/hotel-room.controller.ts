@@ -6,14 +6,13 @@ import {
   Post,
   Put,
   Query,
-  Req,
+  Request,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
 
 import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
 import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
@@ -51,7 +50,10 @@ export class HotelRoomController {
 
   /** В Этом методе нужно добавить проверку на isEnabled */
   @Get('/api/common/hotel-rooms')
-  async getHotelRooms(@Query() params: IFindSearchParams) {
+  async getHotelRooms(@Query() params: IFindSearchParams, @Request() req) {
+    console.log(req.user);
+    console.log(req.users);
+
     return await this.hotelRoomService.getHotelRooms(params);
   }
 
@@ -64,7 +66,7 @@ export class HotelRoomController {
   // @UsePipes(ValidationPipe)
   @Put('/api/admin/hotel-rooms/:id')
   @UseInterceptors(FilesInterceptor('file', 10, saveImagesToStorage))
-  update(@UploadedFiles() file, @Body() data, @Req() req: Request) {
+  update(@UploadedFiles() file, @Body() data) {
     return;
   }
 }
