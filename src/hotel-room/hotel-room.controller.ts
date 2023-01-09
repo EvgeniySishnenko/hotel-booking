@@ -48,22 +48,31 @@ export class HotelRoomController {
     }
   }
 
-  /** В Этом методе нужно добавить проверку на isEnabled */
+  /** Денис Владимиров
+   * 
+   * В этом методе нужно:
+   * 
+   * Если пользователь не аутентифицирован или его роль client, 
+   * то при поиске всегда должен использоваться флаг isEnabled: true. 
+   * 
+   * Я решил, что нужно проверить авторизован ли пользователь  req.isAuthenticated()
+   * и потом получить юзера из базы и проверить у него роль.
+   * Но я не знаю, как можно проверить авторизован ли пользователь. 
+   * @UseGuards(JwtAuthGuard) блокирует и выбрасывает ошибку.
+   * Не могу понять верный ли способ я выбрал или нужен другой. Не могу найти правильное решение
+   * 
+   * Подскажите, пожалуйста, как мне решить эту задачу?
+   * */
   @Get('/api/common/hotel-rooms')
   async getHotelRooms(@Query() params: IFindSearchParams, @Request() req) {
-    console.log(req.user);
-    console.log(req.users);
 
     return await this.hotelRoomService.getHotelRooms(params);
   }
 
-  //   findById(id: ID): Promise<HotelRoom>;
-  //   search(params: SearchRoomsParams): Promise<HotelRoom[]>;
-  //   update(id: ID, data: Partial<HotelRoom>): Promise<HotelRoom>;
 
   /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
-  // @UsePipes(ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Put('/api/admin/hotel-rooms/:id')
   @UseInterceptors(FilesInterceptor('file', 10, saveImagesToStorage))
   update(@UploadedFiles() file, @Body() data) {

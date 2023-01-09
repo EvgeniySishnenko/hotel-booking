@@ -21,8 +21,11 @@ export class HotelRoomService {
 
     const filesPath = file.map((file) => file['filename']);
     try {
-      /** todo уточнить как правильно делать ono to one.
-       * У меня не сработало */
+      /** Денис Владимиров
+       * Не могу добавить отель как зависимость, 
+       * сейчас добавляется id  как строка, но не объект hotel. 
+       * Сделал в в лоб реализацию 
+       */
       const hotel = await this.hotelService.findById(data.hotelId);
 
       const newHotelRoomModel = new this.hotelRoomModel({
