@@ -6,6 +6,7 @@ import { HotelRoom, HotelRoomDocument } from './schemas/hotelRoom.schemas';
 import { HotelService } from 'src/hotel/hotel.service';
 import { CreateHotelRoomDTo } from './dto/create.hotel.room.dto';
 import { off } from 'process';
+import { UpdateHotelRoomDTO } from './dto/update.hotel.room.dto';
 
 @Injectable()
 export class HotelRoomService {
@@ -22,9 +23,9 @@ export class HotelRoomService {
     const filesPath = file.map((file) => file['filename']);
     try {
       /** Денис Владимиров
-       * Не могу добавить отель как зависимость, 
-       * сейчас добавляется id  как строка, но не объект hotel. 
-       * Сделал в в лоб реализацию 
+       * Не могу добавить отель как зависимость,
+       * сейчас добавляется id  как строка, но не объект hotel.
+       * Сделал в в лоб реализацию
        */
       const hotel = await this.hotelService.findById(data.hotelId);
 
@@ -69,6 +70,23 @@ export class HotelRoomService {
         .select('-createdAt')
         .select('-isEnabled')
         .exec();
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async update(data: UpdateHotelRoomDTO, file: File[], id: string) {
+    try {
+      const filesPath = file.map((file) => file['filename']);
+
+      return await this.hotelRoomModel.findByIdAndUpdate(
+        id,
+        {
+          ...data,
+          $push: { images: { $each: filesPath } },
+        },
+        { new: true },
+      );
     } catch (error) {
       return error;
     }
