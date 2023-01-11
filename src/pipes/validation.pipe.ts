@@ -6,10 +6,8 @@ import { ValidationException } from 'src/exaptions/validation.exaption';
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
-    console.log(value);
-
     const obj = plainToClass(metadata.metatype, value);
-    console.log(obj);
+    if (typeof value === 'string') return value;
 
     const errors = await validate(obj);
 
