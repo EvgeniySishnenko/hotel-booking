@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { HotelRoom, HotelRoomDocument } from './schemas/hotelRoom.schemas';
+import { HotelRoom } from './schemas/hotelRoom.schemas';
 import { HotelService } from 'src/hotel/hotel.service';
 import { CreateHotelRoomDTo } from './dto/create.hotel.room.dto';
 import { off } from 'process';
@@ -12,7 +12,7 @@ import { UpdateHotelRoomDTO } from './dto/update.hotel.room.dto';
 export class HotelRoomService {
   constructor(
     @InjectModel(HotelRoom.name)
-    private hotelRoomModel: Model<HotelRoomDocument>,
+    private hotelRoomModel: Model<HotelRoom>,
     private hotelService: HotelService,
     @InjectConnection() private connection: Connection,
   ) {}

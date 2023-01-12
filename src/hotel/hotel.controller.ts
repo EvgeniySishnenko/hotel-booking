@@ -27,8 +27,6 @@ export class HotelController {
   async addHotel(@Body() addHotelDTO: AddHotelParamsDTO) {
     try {
       const hotel = await this.hotelService.addHotel(addHotelDTO);
-      console.log('hotel', hotel);
-
       return {
         id: hotel._id,
         title: hotel.title,

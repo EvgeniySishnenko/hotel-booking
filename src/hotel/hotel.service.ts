@@ -4,12 +4,12 @@ import { Connection, Model } from 'mongoose';
 import { AddHotelParamsDTO } from './dto/add.hotel.params.dto';
 import { UpdateHotelParamsDTO } from './dto/update.hotel.params.dto';
 import { IFindSearchParams } from './interfaces/find-search.params.interface';
-import { Hotel, HotelDocument } from './schemas/hotel.schemas';
+import { Hotel } from './schemas/hotel.schemas';
 
 @Injectable()
 export class HotelService {
   constructor(
-    @InjectModel(Hotel.name) private hotelModel: Model<HotelDocument>,
+    @InjectModel(Hotel.name) private hotelModel: Model<Hotel>,
     @InjectConnection() private connection: Connection,
   ) {}
 
