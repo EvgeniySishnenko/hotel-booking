@@ -43,4 +43,18 @@ export class ReservationsService {
       return error;
     }
   }
+
+  async getReservations(id: TID) {
+    try {
+      return await this.reservationsModel
+        .find({ userId: id })
+        .select('-__v')
+        .select('-updatedAt')
+        .select('-createdAt')
+        .select('-userId')
+        .select('-_id');
+    } catch (error) {
+      return error;
+    }
+  }
 }

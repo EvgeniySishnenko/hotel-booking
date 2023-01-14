@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
 import { CurrentUser } from 'src/auth/decorator/current.user.decorator';
 import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
@@ -19,6 +19,16 @@ export class ReservationsController {
   ) {
     try {
       return await this.reservationsService.addReservation(data, user._id);
+    } catch (error) {
+      return error;
+    }
+  }
+  /** 403 - если роль пользователя не client; */
+  @UseGuards(JwtAuthGuard)
+  @Get('/api/client/reservations')
+  async getReservations(@CurrentUser() user: User & { _id: TID }) {
+    try {
+      return await this.reservationsService.getReservations(user._id);
     } catch (error) {
       return error;
     }
