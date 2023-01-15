@@ -26,10 +26,20 @@ export class ReservationsService {
 
   async addReservation(data: ReservationDto, id: TID) {
     try {
+      const checkDateReservation = await this.reservationsModel.find({
+        dateStart: {
+          $lte: new Date(data.dateEnd),
+          $gte: new Date(data.dateStart),
+        },
+      });
+
+      if (checkDateReservation.length) {
+        throw new BadRequestException('На эти даты уже есть бронь');
+      }
+
       const hotelRoom = await this.hotelRoomService.getHotelRoom(
         data.hotelRoom,
       );
-
       if (!hotelRoom || !hotelRoom.isEnabled) throw new BadRequestException();
 
       const newReservation = new this.reservationsModel({
