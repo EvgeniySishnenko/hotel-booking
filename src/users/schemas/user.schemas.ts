@@ -16,7 +16,7 @@ export class User {
   @Prop({ required: true })
   public lastName: string;
   @Prop({ required: true, default: Role.Client })
-  public role: string;
+  public role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

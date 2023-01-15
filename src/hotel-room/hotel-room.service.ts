@@ -68,7 +68,6 @@ export class HotelRoomService {
         .select('-updatedAt')
         .select('-__v')
         .select('-createdAt')
-        .select('-isEnabled')
         .exec();
     } catch (error) {
       return error;
