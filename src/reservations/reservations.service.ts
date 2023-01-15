@@ -79,4 +79,12 @@ export class ReservationsService {
       return error;
     }
   }
+
+  async getUserReservations(userId: string) {
+    try {
+      return await this.reservationsModel.find({ userId });
+    } catch (error) {
+      return error;
+    }
+  }
 }

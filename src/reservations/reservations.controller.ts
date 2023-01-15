@@ -59,4 +59,15 @@ export class ReservationsController {
       return error;
     }
   }
+
+  /**403 - если роль пользователя не manager. */
+  // @UseGuards(JwtAuthGuard)
+  @Get('/api/manager/reservations/:userId')
+  async getUserReservations(@Param() param: { userId: string }) {
+    try {
+      return await this.reservationsService.getUserReservations(param.userId);
+    } catch (error) {
+      return error;
+    }
+  }
 }
