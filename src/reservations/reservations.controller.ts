@@ -44,9 +44,7 @@ export class ReservationsController {
     }
   }
 
-  /** 403 - если роль пользователя не client;
-   * Реализован в сервисе этого метода.
-   * Возможно нужен guard */
+  /** 403 - если роль пользователя не client; */
   @UseGuards(JwtAuthGuard)
   @Delete('/api/client/reservations/:id')
   async removeReservation(
@@ -55,6 +53,17 @@ export class ReservationsController {
   ) {
     try {
       return await this.reservationsService.removeReservation(param.id, user);
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** 403 - если роль пользователя не manager; */
+  @UseGuards(JwtAuthGuard)
+  @Delete('/api/manager/reservations/:id')
+  async removeManagerReservation(@Param() param: { id: string }) {
+    try {
+      return await this.reservationsService.removeManagerReservation(param.id);
     } catch (error) {
       return error;
     }

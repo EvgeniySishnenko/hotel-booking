@@ -65,14 +65,23 @@ export class ReservationsService {
 
       /** 400 - если брони с указанным ID не существует */
       if (!room) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-      /** 403 - если роль пользователя не client; */
       /** 403 - если ID текущего пользователя не совпадает с ID пользователя в брони */
-      if (
-        room.userId.toString() !== user._id.toString() ||
-        user.role !== Role.Client
-      ) {
+      if (room.userId.toString() !== user._id.toString()) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
+
+      return await this.reservationsModel.deleteOne({ _id: id });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async removeManagerReservation(id: TID) {
+    try {
+      const room = await this.reservationsModel.findById(id);
+
+      /** 400 - если брони с указанным ID не существует */
+      if (!room) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
 
       return await this.reservationsModel.deleteOne({ _id: id });
     } catch (error) {
