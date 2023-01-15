@@ -11,6 +11,7 @@ import { HotelRoomService } from 'src/hotel-room/hotel-room.service';
 import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { HotelRoom } from 'src/hotel-room/schemas/hotelRoom.schemas';
 import { Role } from 'src/users/enums/roles.enum';
+import { User } from 'src/users/schemas/user.schemas';
 import { ReservationDto } from './dto/reservation.dto';
 import { Reservations } from './schemas/reservations.schemas';
 
@@ -53,6 +54,27 @@ export class ReservationsService {
         .select('-createdAt')
         .select('-userId')
         .select('-_id');
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async removeReservation(id: TID, user: User & { _id: TID }) {
+    try {
+      const room = await this.reservationsModel.findById(id);
+
+      /** 400 - если брони с указанным ID не существует */
+      if (!room) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
+      /** 403 - если роль пользователя не client; */
+      /** 403 - если ID текущего пользователя не совпадает с ID пользователя в брони */
+      if (
+        room.userId.toString() !== user._id.toString() ||
+        user.role !== Role.Client
+      ) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+
+      return await this.reservationsModel.deleteOne({ _id: id });
     } catch (error) {
       return error;
     }

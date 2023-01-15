@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
 import { CurrentUser } from 'src/auth/decorator/current.user.decorator';
 import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
@@ -11,6 +19,8 @@ export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
   /** 403 - если роль пользователя не client; */
+  /** Метод IReservation.addReservation должен проверять, доступен ли номер на заданную дату. */
+
   @UseGuards(JwtAuthGuard)
   @Post('/api/client/reservations')
   async addReservation(
@@ -29,6 +39,22 @@ export class ReservationsController {
   async getReservations(@CurrentUser() user: User & { _id: TID }) {
     try {
       return await this.reservationsService.getReservations(user._id);
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** 403 - если роль пользователя не client;
+   * Реализован в сервисе этого метода.
+   * Возможно нужен guard */
+  @UseGuards(JwtAuthGuard)
+  @Delete('/api/client/reservations/:id')
+  async removeReservation(
+    @Param() param: { id: string },
+    @CurrentUser() user: User & { _id: TID },
+  ) {
+    try {
+      return await this.reservationsService.removeReservation(param.id, user);
     } catch (error) {
       return error;
     }
