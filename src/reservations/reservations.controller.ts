@@ -7,8 +7,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
-import { CurrentUser } from 'src/auth/decorator/current.user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current.user.decorator';
 import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { User } from 'src/users/schemas/user.schemas';
 import { ReservationDto } from './dto/reservation.dto';

@@ -14,8 +14,8 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
 import { CurrentUser } from 'src/auth/decorator/current.user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { User } from 'src/users/schemas/user.schemas';

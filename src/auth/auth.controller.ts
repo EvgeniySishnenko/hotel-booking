@@ -14,8 +14,8 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/schemas/user.schemas';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './common/jwt.auth.guard';
 import { CurrentUser } from './decorator/current.user.decorator';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { LoginDTO } from './dto/login.dto';
 
 @Controller('auth')

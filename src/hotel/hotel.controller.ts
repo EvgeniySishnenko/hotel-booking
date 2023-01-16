@@ -9,7 +9,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { AddHotelParamsDTO } from './dto/add.hotel.params.dto';
 import { UpdateHotelParamsDTO } from './dto/update.hotel.params.dto';

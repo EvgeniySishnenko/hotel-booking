@@ -1,4 +1,40 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
+import { Roles } from 'src/auth/decorators/roles.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { Role } from './enums/roles.enum';
 
 @Controller('users')
-export class UsersController {}
+export class UsersController {
+  constructor(private authService: AuthService) {}
+
+  /** 403 - если роль пользователя не admin */
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesGuard)
+  @Post('/api/admin/users/')
+  @UsePipes(ValidationPipe)
+  async create(@Body() registrationDTO: CreateUserDTO) {
+    try {
+      const user = await this.authService.registration(registrationDTO);
+      return {
+        email: user.email,
+        password: user.password,
+        name: user.lastName,
+        contactPhone: user.contactPhone,
+        role: user.role,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+}
