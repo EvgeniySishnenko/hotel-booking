@@ -7,6 +7,8 @@ import { HotelService } from 'src/hotel/hotel.service';
 import { CreateHotelRoomDTo } from './dto/create.hotel.room.dto';
 import { off } from 'process';
 import { UpdateHotelRoomDTO } from './dto/update.hotel.room.dto';
+import { User } from 'src/users/schemas/user.schemas';
+import { Role } from 'src/users/enums/roles.enum';
 
 @Injectable()
 export class HotelRoomService {
@@ -22,16 +24,11 @@ export class HotelRoomService {
 
     const filesPath = file.map((file) => file['filename']);
     try {
-      /** Денис Владимиров
-       * Не могу добавить отель как зависимость,
-       * сейчас добавляется id  как строка, но не объект hotel.
-       * Сделал в в лоб реализацию
-       */
       const hotel = await this.hotelService.findById(data.hotelId);
 
       const newHotelRoomModel = new this.hotelRoomModel({
         ...data,
-        hotel: hotel, // todo заменить на id или как правильно зависимости делать
+        hotel: hotel,
         images: filesPath,
       });
       await newHotelRoomModel.save();
@@ -42,13 +39,19 @@ export class HotelRoomService {
     }
   }
 
-  async getHotelRooms(params) {
+  async getHotelRooms(params, user: User | null) {
     const skip = Number(params.offset) || 0;
     const limit = Number(params.limit) || 6;
+    const findOptions: any = { hotel: { _id: params.hotel } }; // TODO убрать any. Прописать тип
+
+    if (user?.role === Role.Client) {
+      findOptions.isEnabled = true;
+    }
+    console.log('findOptions', findOptions);
 
     try {
       return await this.hotelRoomModel
-        .find({ hotel: { _id: params.hotel } })
+        .find(findOptions)
         .skip(skip)
         .limit(limit)
         .select('-updatedAt')
