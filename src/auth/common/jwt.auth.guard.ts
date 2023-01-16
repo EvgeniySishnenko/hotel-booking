@@ -14,7 +14,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err) {
       throw err;
     }
-    if (!user) {
+
+    if (!user || user.deauth) {
       throw new UnauthorizedException();
     }
     return user;

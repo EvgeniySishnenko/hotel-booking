@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
+import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { User, UserDocument } from './schemas/user.schemas';
 
@@ -11,9 +12,6 @@ export class UsersService {
     @InjectConnection() private connection: Connection,
   ) {}
 
-  // async create(data: Partial<User>): Promise<User> {}
-  // async findById(id: ID): Promise<User> {}
-  // async findAll(params: SearchUserParams): Promise<User[]> {}
   async create(data: Partial<CreateUserDTO>) {
     const newUser = new this.UserModel(data);
     return await newUser.save();
@@ -21,5 +19,13 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.UserModel.findOne({ email });
     return user;
+  }
+
+  async updateDeauth(id: TID, deauth: boolean) {
+    try {
+      return await this.UserModel.findByIdAndUpdate(id, { deauth });
+    } catch (error) {
+      return error;
+    }
   }
 }

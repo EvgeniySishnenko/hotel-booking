@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { LoginDTO } from './dto/login.dto';
+import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
+import { User } from 'src/users/schemas/user.schemas';
 
 @Injectable()
 export class AuthService {
@@ -23,13 +25,15 @@ export class AuthService {
     try {
       const user = await this.userService.findByEmail(loginDTO.email);
       if (user) {
-        return user;
+        const id = (user as User & { _id: TID })._id;
+        const updateUserDeauth = await this.userService.updateDeauth(id, false);
+        return updateUserDeauth;
       }
     } catch (error) {
       return error;
     }
   }
-  /** не знаю какой тип прописать для user. на ID ругается */
+  /** Todo прописать type для user. на ID ругается */
   private async generateToken(user: any) {
     const payload = {
       email: user.email,
@@ -64,5 +68,9 @@ export class AuthService {
       ...userDTO,
       password: hashPassword,
     });
+  }
+
+  async logout(id: TID) {
+    return await this.userService.updateDeauth(id, true);
   }
 }

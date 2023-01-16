@@ -17,6 +17,9 @@ export class User {
   public lastName: string;
   @Prop({ required: true, default: Role.Client })
   public role: Role;
+  /** Поле deauth: boolean, можно его ставить тру при logout, чтобы посылать пользователя снова на авторизацию */
+  @Prop({ default: false })
+  public deauth: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

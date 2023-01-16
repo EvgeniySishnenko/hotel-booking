@@ -9,10 +9,13 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
+import { User } from 'src/users/schemas/user.schemas';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './common/jwt.auth.guard';
+import { CurrentUser } from './decorator/current.user.decorator';
 import { LoginDTO } from './dto/login.dto';
 
 @Controller('auth')
@@ -39,17 +42,9 @@ export class AuthController {
     return await this.authService.login(loginDTO);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/api/auth/logout')
-  async logout(@Res() res: any, @Req() request: any) {
-    // console.log(req.headers.authorization, req.headers);
-    // delete req.headers.authorization;
-    // res.clearCookie('jwt');
-    // return {
-    //   l: 'res.clearCookie',
-    // };
-    // res.clearCookie('jwt');
-    // res.redirect('/');
-
-    return;
+  async logout(@CurrentUser() user: User & { _id: TID }) {
+    return await this.authService.logout(user._id);
   }
 }
