@@ -13,7 +13,7 @@ export class RolesGuard extends AuthGuard('jwt') {
   // public canActivate(context: ExecutionContext) {
   //   return super.canActivate(context);
   // }
-  constructor(this.super()) {}
+  // constructor(this.super()) {}
   public handleRequest(err, user, info) {
     if (err) {
       throw err;
