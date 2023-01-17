@@ -13,14 +13,14 @@ import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { User } from 'src/users/schemas/user.schemas';
 import { ReservationDto } from './dto/reservation.dto';
 import { ReservationsService } from './reservations.service';
+import { Role } from 'src/users/enums/roles.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('reservations')
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
-  /** 403 - если роль пользователя не client; */
-  /** Метод IReservation.addReservation должен проверять, доступен ли номер на заданную дату. */
-
+  @UseGuards(new RolesGuard([Role.Client]))
   @UseGuards(JwtAuthGuard)
   @Post('/api/client/reservations')
   async addReservation(
@@ -33,7 +33,7 @@ export class ReservationsController {
       return error;
     }
   }
-  /** 403 - если роль пользователя не client; */
+  @UseGuards(new RolesGuard([Role.Client]))
   @UseGuards(JwtAuthGuard)
   @Get('/api/client/reservations')
   async getReservations(@CurrentUser() user: User & { _id: TID }) {
@@ -44,7 +44,7 @@ export class ReservationsController {
     }
   }
 
-  /** 403 - если роль пользователя не client; */
+  @UseGuards(new RolesGuard([Role.Client]))
   @UseGuards(JwtAuthGuard)
   @Delete('/api/client/reservations/:id')
   async removeReservation(
@@ -58,7 +58,7 @@ export class ReservationsController {
     }
   }
 
-  /** 403 - если роль пользователя не manager; */
+  @UseGuards(new RolesGuard([Role.Manager]))
   @UseGuards(JwtAuthGuard)
   @Delete('/api/manager/reservations/:id')
   async removeManagerReservation(@Param() param: { id: string }) {
@@ -69,8 +69,8 @@ export class ReservationsController {
     }
   }
 
-  /**403 - если роль пользователя не manager. */
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(new RolesGuard([Role.Manager]))
+  @UseGuards(JwtAuthGuard)
   @Get('/api/manager/reservations/:userId')
   async getUserReservations(@Param() param: { userId: string }) {
     try {

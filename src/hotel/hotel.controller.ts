@@ -10,7 +10,9 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { Role } from 'src/users/enums/roles.enum';
 import { AddHotelParamsDTO } from './dto/add.hotel.params.dto';
 import { UpdateHotelParamsDTO } from './dto/update.hotel.params.dto';
 import { HotelService } from './hotel.service';
@@ -20,9 +22,9 @@ import { IFindSearchParams } from './interfaces/find-search.params.interface';
 export class HotelController {
   constructor(private hotelService: HotelService) {}
 
-  /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
-  // @UsePipes(ValidationPipe)
+  @UseGuards(new RolesGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Post('/api/admin/hotels')
   async addHotel(@Body() addHotelDTO: AddHotelParamsDTO) {
     try {
@@ -37,8 +39,8 @@ export class HotelController {
     }
   }
 
-  /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(new RolesGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
   @Get('/api/admin/hotels')
   async getHotels(@Query() params: Omit<IFindSearchParams, 'hotel'>) {
     try {
@@ -49,9 +51,9 @@ export class HotelController {
     }
   }
 
-  /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
-  // @UsePipes(ValidationPipe)
+  @UseGuards(new RolesGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Put('/api/admin/hotels/:id')
   async updateHotel(
     @Body() updateHotelParamsDTO: UpdateHotelParamsDTO,
