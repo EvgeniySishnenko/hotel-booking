@@ -3,23 +3,35 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { ROLES_KEY } from '../decorators/roles.guard';
 
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') {
-  // public canActivate(context: ExecutionContext) {
-  //   return super.canActivate(context);
-  // }
-  // constructor(this.super()) {}
+  constructor(private roles: string[] | null) {
+    super();
+  }
+
+  public canActivate(context: ExecutionContext) {
+    return super.canActivate(context);
+  }
+
   public handleRequest(err, user, info) {
     if (err) {
       throw err;
     }
-    if (!user) {
-      throw new UnauthorizedException();
+
+    if (!this.roles) {
+      return user || null;
+    }
+
+    const role = user.role;
+    const doesRoleMatch = this.roles.some((r) => r === role);
+
+    if (!doesRoleMatch) {
+      throw new HttpException('Недостаточно прав', HttpStatus.FORBIDDEN);
     }
     return user;
   }
