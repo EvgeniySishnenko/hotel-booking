@@ -14,8 +14,8 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/schemas/user.schemas';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './common/jwt.auth.guard';
-import { CurrentUser } from './decorator/current.user.decorator';
+import { CurrentUser } from './decorators/current.user.decorator';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { LoginDTO } from './dto/login.dto';
 
 @Controller('auth')
@@ -39,7 +39,11 @@ export class AuthController {
 
   @Post('/api/auth/login')
   async login(@Req() req: Request, @Body() loginDTO: LoginDTO) {
-    return await this.authService.login(loginDTO);
+    try {
+      return await this.authService.login(loginDTO);
+    } catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)

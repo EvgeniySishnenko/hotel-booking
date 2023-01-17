@@ -14,10 +14,12 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-import { JwtAuthGuard } from 'src/auth/common/jwt.auth.guard';
-import { CurrentUser } from 'src/auth/decorator/current.user.decorator';
+import { CurrentUser } from 'src/auth/decorators/current.user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { Role } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/schemas/user.schemas';
 import { CreateHotelRoomDTo } from './dto/create.hotel.room.dto';
 import { UpdateHotelRoomDTO } from './dto/update.hotel.room.dto';
@@ -31,8 +33,8 @@ import { saveImagesToStorage } from './utils/save.images..to.storage';
 export class HotelRoomController {
   constructor(private hotelRoomService: HotelRoomService) {}
 
-  /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(new RolesGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   @Post('/api/admin/hotel-rooms')
   @UseInterceptors(FilesInterceptor('file', 10, saveImagesToStorage))
@@ -62,8 +64,8 @@ export class HotelRoomController {
     return await this.hotelRoomService.getHotelRooms(params, user);
   }
 
-  /** еще guard нужен- 403 - если роль пользователя не admin. */
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(new RolesGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   @Put('/api/admin/hotel-rooms/:id')
   @UseInterceptors(FilesInterceptor('file', 10, saveImagesToStorage))
