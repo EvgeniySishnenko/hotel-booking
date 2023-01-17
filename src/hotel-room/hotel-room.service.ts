@@ -47,7 +47,6 @@ export class HotelRoomService {
     if (user?.role === Role.Client) {
       findOptions.isEnabled = true;
     }
-    console.log('findOptions', findOptions);
 
     try {
       return await this.hotelRoomModel
