@@ -42,6 +42,8 @@ export class UsersController {
     }
   }
 
+  @UseGuards(new RolesGuard([Role.Admin, Role.Manager]))
+  @UseGuards(JwtAuthGuard)
   @Get('/api/admin/users/')
   async findUsers(@Query() params: ISearchParams) {
     try {

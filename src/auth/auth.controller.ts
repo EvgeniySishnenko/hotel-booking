@@ -39,7 +39,11 @@ export class AuthController {
 
   @Post('/api/auth/login')
   async login(@Req() req: Request, @Body() loginDTO: LoginDTO) {
-    return await this.authService.login(loginDTO);
+    try {
+      return await this.authService.login(loginDTO);
+    } catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)
