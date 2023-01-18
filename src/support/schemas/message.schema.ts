@@ -23,3 +23,4 @@ export class Message extends Document implements IMessage {
   @Prop({ required: true })
   readAt: Date;
 }
+export const MessageSchema = SchemaFactory.createForClass(Message);

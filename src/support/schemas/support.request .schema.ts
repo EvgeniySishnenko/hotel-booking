@@ -24,3 +24,5 @@ export class SupportRequest extends Document implements ISupport {
   @Prop({ required: true })
   isActive: boolean;
 }
+export const SupportRequestSchema =
+  SchemaFactory.createForClass(SupportRequest);
