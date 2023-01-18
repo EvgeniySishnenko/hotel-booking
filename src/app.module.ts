@@ -10,6 +10,7 @@ import { HotelController } from './hotel/hotel.controller';
 import { HotelModule } from './hotel/hotel.module';
 import { ReservationsController } from './reservations/reservations.controller';
 import { ReservationsModule } from './reservations/reservations.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { ReservationsModule } from './reservations/reservations.module';
     AuthModule,
     HotelModule,
     ReservationsModule,
+    SupportModule,
   ],
-  controllers: [AppController, HotelController, ReservationsController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
