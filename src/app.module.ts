@@ -6,9 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { HotelController } from './hotel/hotel.controller';
 import { HotelModule } from './hotel/hotel.module';
-import { ReservationsController } from './reservations/reservations.controller';
 import { ReservationsModule } from './reservations/reservations.module';
 import { SupportModule } from './support/support.module';
 
