@@ -18,8 +18,12 @@ export class SupportRequest extends Document implements ISupport {
   @Prop({ default: new Date() })
   createdAt: Date;
 
-  @Prop({ required: true, ref: Message.name })
-  messages: Message[];
+  @Prop({
+    type: Array,
+    required: true,
+    ref: Message.name,
+  })
+  messages: [Message];
 
   @Prop({ default: true })
   isActive: boolean;

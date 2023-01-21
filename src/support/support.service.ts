@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
+import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
 import { User } from 'src/users/schemas/user.schemas';
 import { CreateSupportRequestDto } from './dto/create.support.request.dto';
 import { Message } from './schemas/message.schema';
@@ -26,10 +27,11 @@ export class SupportService {
 
     const newSupportRequest = new this.supportRequestModel({
       user: user._id,
-      message: newMessage,
     });
+
     try {
       await newMessage.save();
+      newSupportRequest.messages = [newMessage];
       await newSupportRequest.save();
       return [
         {
@@ -39,6 +41,49 @@ export class SupportService {
           hasNewMessages: true, // Todo вычисляемый параметр
         },
       ];
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getSupportCalls(
+    params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
+  ) {
+    try {
+      const skip = Number(params.offset) || 0;
+      const limit = Number(params.limit) || 6;
+
+      const supportMessage = await this.supportRequestModel
+        .find({ isActive: params.isActive })
+        .skip(skip)
+        .limit(limit)
+        // .select('-updatedAt')
+        // .select('-__v')
+        // .select('-createdAt')
+        .exec();
+
+      const hasNewMessages = await this.supportRequestModel.find({
+        'messages.readAt': { $ne: null },
+      });
+      const hasNewMessagesIds = await hasNewMessages.map((item) =>
+        item._id.toString(),
+      );
+      return supportMessage.map((support) => {
+        return {
+          id: support._id,
+          createdAt: support.createdAt,
+          isActive: support.isActive,
+          hasNewMessages: hasNewMessagesIds.includes(support._id.toString()),
+        };
+      });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getHistoryMessageSupportCalls(id: string) {
+    try {
+      return await this.messageModel.find({ author: id });
     } catch (error) {
       return error;
     }
