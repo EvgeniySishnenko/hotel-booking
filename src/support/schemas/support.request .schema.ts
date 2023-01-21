@@ -15,13 +15,13 @@ export class SupportRequest extends Document implements ISupport {
   })
   user: TID;
 
-  @Prop({ required: true })
+  @Prop({ default: new Date() })
   createdAt: Date;
 
   @Prop({ required: true, ref: Message.name })
   messages: Message[];
 
-  @Prop({ required: true })
+  @Prop({ default: true })
   isActive: boolean;
 }
 export const SupportRequestSchema =

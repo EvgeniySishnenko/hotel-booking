@@ -14,13 +14,13 @@ export class Message extends Document implements IMessage {
   })
   author: TID;
 
-  @Prop({ required: true })
+  @Prop({ default: new Date() })
   sentAt: Date;
 
   @Prop({ required: true })
   text: string;
 
-  @Prop({ required: true })
+  @Prop()
   readAt: Date;
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);
