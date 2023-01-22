@@ -45,35 +45,41 @@ export class SupportService {
       return error;
     }
   }
-  /** todo переписать на aggregate  */
-  async getSupportCalls(
+  async getSupportCallsClient(
     params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
   ) {
     try {
       const skip = Number(params.offset) || 0;
       const limit = Number(params.limit) || 6;
 
-      const supportMessage = await this.supportRequestModel
-        .find({ isActive: params.isActive })
-        .skip(skip)
-        .limit(limit)
-        .exec();
+      const supportMessage = await this.supportRequestModel.aggregate([
+        { $match: { isActive: Boolean(params.isActive) } },
+        { $unwind: '$messages' },
 
-      const hasNewMessages = await this.supportRequestModel.find({
-        'messages.readAt': { $ne: null },
-      });
-      const hasNewMessagesIds = await hasNewMessages.map((item) =>
-        item._id.toString(),
-      );
+        {
+          $addFields: {
+            hasNewMessages: {
+              $or: [
+                {
+                  $in: ['$messages.readAt', [null]],
+                },
+              ],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            createdAt: 1,
+            isActive: 1,
+            hasNewMessages: 1,
+          },
+        },
 
-      return supportMessage.map((support) => {
-        return {
-          id: support._id,
-          createdAt: support.createdAt,
-          isActive: support.isActive,
-          hasNewMessages: hasNewMessagesIds.includes(support._id.toString()),
-        };
-      });
+        { $skip: skip },
+        { $limit: limit },
+      ]);
+      return supportMessage;
     } catch (error) {
       return error;
     }

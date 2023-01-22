@@ -38,7 +38,7 @@ export class SupportController {
     @Query() params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
   ) {
     try {
-      const result = await this.supportService.getSupportCalls(params);
+      const result = await this.supportService.getSupportCallsClient(params);
       return result;
     } catch (error) {
       return error;
