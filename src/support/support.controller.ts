@@ -65,19 +65,6 @@ export class SupportController {
   async getHistoryMessageSupportCalls(@Param('id') id: string) {
     try {
       return await this.supportService.getHistoryMessageSupportCalls(id);
-
-      // [
-      //   {
-      //     id: string,
-      //     createdAt: string,
-      //     text: string,
-      //     readAt: string,
-      //     author: {
-      //       id: string,
-      //       name: string,
-      //     },
-      //   },
-      // ];
     } catch (error) {
       return error;
     }

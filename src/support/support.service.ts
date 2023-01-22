@@ -87,7 +87,7 @@ export class SupportService {
       const limit = Number(params.limit) || 6;
 
       const supportMessage = await this.supportRequestModel.aggregate([
-        // { $match: { isActive: Boolean(params.isActive) } },
+        { $match: { isActive: Boolean(params.isActive) } },
         { $unwind: '$messages' },
         {
           $lookup: {
@@ -124,9 +124,6 @@ export class SupportService {
         { $skip: skip },
         { $limit: limit },
       ]);
-      // const hasNewMessages = await this.supportRequestModel.aggregate([]);
-      // console.log(hasNewMessages);
-
       return supportMessage;
     } catch (error) {
       return error;
@@ -135,7 +132,34 @@ export class SupportService {
 
   async getHistoryMessageSupportCalls(id: string) {
     try {
-      return await this.messageModel.find({ author: id });
+      return await this.supportRequestModel.aggregate([
+        {
+          $match: {
+            $expr: {
+              $eq: ['$_id', { $toObjectId: id }],
+            },
+          },
+        },
+        { $unwind: '$messages' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            createdAt: 1,
+            text: '$messages.text',
+            readAt: '$messages.readAt',
+            'author._id': 1,
+            'author.lastName': 1,
+          },
+        },
+      ]);
     } catch (error) {
       return error;
     }

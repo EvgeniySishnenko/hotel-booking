@@ -20,7 +20,7 @@ export class Message extends Document implements IMessage {
   @Prop({ required: true })
   text: string;
 
-  @Prop({ default: new Date() })
+  @Prop({ default: null })
   readAt: Date | null;
 }
 export const MessageSchema = SchemaFactory.createForClass(Message);
