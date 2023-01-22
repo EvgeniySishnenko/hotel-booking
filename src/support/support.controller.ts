@@ -52,23 +52,8 @@ export class SupportController {
     @Query() params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
   ) {
     try {
-      const result = await this.supportService.getSupportCalls(params);
+      const result = await this.supportService.getSupportCallsManager(params);
       return result;
-      /** нужно отдавать такой объект. Не понял как формировать hasNewMessages */
-      // [
-      //   {
-      //     id: string,
-      //     createdAt: string,
-      //     isActive: boolean,
-      //     hasNewMessages: boolean,
-      //     client: {
-      //       id: string,
-      //       name: string,
-      //       email: string,
-      //       contactPhone: string,
-      //     },
-      //   },
-      // ];
     } catch (error) {
       return error;
     }

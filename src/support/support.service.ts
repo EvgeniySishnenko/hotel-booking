@@ -45,7 +45,7 @@ export class SupportService {
       return error;
     }
   }
-
+  /** todo переписать на aggregate  */
   async getSupportCalls(
     params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
   ) {
@@ -57,9 +57,6 @@ export class SupportService {
         .find({ isActive: params.isActive })
         .skip(skip)
         .limit(limit)
-        // .select('-updatedAt')
-        // .select('-__v')
-        // .select('-createdAt')
         .exec();
 
       const hasNewMessages = await this.supportRequestModel.find({
@@ -68,6 +65,7 @@ export class SupportService {
       const hasNewMessagesIds = await hasNewMessages.map((item) =>
         item._id.toString(),
       );
+
       return supportMessage.map((support) => {
         return {
           id: support._id,
@@ -76,6 +74,60 @@ export class SupportService {
           hasNewMessages: hasNewMessagesIds.includes(support._id.toString()),
         };
       });
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getSupportCallsManager(
+    params: Omit<IFindSearchParams & { isActive: boolean }, 'hotel'>,
+  ) {
+    try {
+      const skip = Number(params.offset) || 0;
+      const limit = Number(params.limit) || 6;
+
+      const supportMessage = await this.supportRequestModel.aggregate([
+        // { $match: { isActive: Boolean(params.isActive) } },
+        { $unwind: '$messages' },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'client',
+          },
+        },
+        {
+          $addFields: {
+            hasNewMessages: {
+              $or: [
+                {
+                  $in: ['$messages.readAt', [null]],
+                },
+              ],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            createdAt: 1,
+            isActive: 1,
+            hasNewMessages: 1,
+            'client._id': 1,
+            'client.name': 1,
+            'client.email': 1,
+            'client.contactPhone': 1,
+          },
+        },
+
+        { $skip: skip },
+        { $limit: limit },
+      ]);
+      // const hasNewMessages = await this.supportRequestModel.aggregate([]);
+      // console.log(hasNewMessages);
+
+      return supportMessage;
     } catch (error) {
       return error;
     }
