@@ -78,5 +78,17 @@ export class SupportController {
   }
 
   @Post('/api/common/support-requests/:id/messages/read')
-  async markMessagesAsRead() {}
+  async markMessagesAsRead(
+    @Param('id') id: string,
+    @Body() data: { createdBefore: string },
+  ) {
+    try {
+      return await this.supportService.markMessagesAsRead(
+        id,
+        data.createdBefore,
+      );
+    } catch (error) {
+      return error;
+    }
+  }
 }

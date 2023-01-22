@@ -164,4 +164,16 @@ export class SupportService {
       return error;
     }
   }
+
+  async markMessagesAsRead(id: string, readAt: string) {
+    try {
+      await this.messageModel.findByIdAndUpdate(id, { readAt: readAt });
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
 }
