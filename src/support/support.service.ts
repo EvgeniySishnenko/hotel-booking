@@ -31,7 +31,7 @@ export class SupportService {
 
     try {
       await newMessage.save();
-      newSupportRequest.messages = [newMessage];
+      newSupportRequest.messages = [newMessage._id];
       await newSupportRequest.save();
       return [
         {
@@ -146,7 +146,7 @@ export class SupportService {
             },
           },
         },
-        { $unwind: '$messages' },
+
         {
           $lookup: {
             from: 'users',
@@ -155,6 +155,16 @@ export class SupportService {
             as: 'author',
           },
         },
+
+        {
+          $lookup: {
+            from: 'messages',
+            localField: 'messages',
+            foreignField: '_id',
+            as: 'messages',
+          },
+        },
+        { $unwind: '$messages' },
         {
           $project: {
             _id: 1,
@@ -173,12 +183,24 @@ export class SupportService {
 
   async markMessagesAsRead(id: string, readAt: string) {
     try {
-      await this.messageModel.findByIdAndUpdate(id, { readAt: readAt });
-
-      return {
-        success: true,
-      };
+      return await this.supportRequestModel
+        .findById(id)
+        .then(async (supportRequests) => {
+          supportRequests.messages.forEach(async (messageId) => {
+            await this.messageModel.updateOne(
+              { _id: messageId },
+              {
+                $set: { readAt: readAt },
+              },
+            );
+          });
+          return {
+            success: true,
+          };
+        });
     } catch (error) {
+      console.log(error);
+
       return error;
     }
   }

@@ -77,6 +77,8 @@ export class SupportController {
     }
   }
 
+  @UseGuards(new RolesGuard([Role.Manager, Role.Client]))
+  @UseGuards(JwtAuthGuard)
   @Post('/api/common/support-requests/:id/messages/read')
   async markMessagesAsRead(
     @Param('id') id: string,
