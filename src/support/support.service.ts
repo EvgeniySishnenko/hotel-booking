@@ -94,7 +94,6 @@ export class SupportService {
 
       const supportMessage = await this.supportRequestModel.aggregate([
         { $match: { isActive: Boolean(params.isActive) } },
-        { $unwind: '$messages' },
         {
           $lookup: {
             from: 'users',
@@ -103,6 +102,15 @@ export class SupportService {
             as: 'client',
           },
         },
+        {
+          $lookup: {
+            from: 'messages',
+            localField: 'messages',
+            foreignField: '_id',
+            as: 'messages',
+          },
+        },
+        { $unwind: '$messages' },
         {
           $addFields: {
             hasNewMessages: {
@@ -114,6 +122,7 @@ export class SupportService {
             },
           },
         },
+
         {
           $project: {
             _id: 1,
