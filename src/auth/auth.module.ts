@@ -12,7 +12,7 @@ dotenv.config();
     PassportModule,
     JwtModule.register({
       secret: process.env.SECRET_KEY_JWT,
-      signOptions: { expiresIn: '120s' },
+      signOptions: { expiresIn: '1020s' },
     }),
     forwardRef(() => UsersModule),
   ],
