@@ -38,7 +38,7 @@ export class SupportService {
           id: newSupportRequest._id,
           createdAt: newSupportRequest.createdAt,
           isActive: newSupportRequest.isActive,
-          hasNewMessages: true, // Todo вычисляемый параметр
+          hasNewMessages: true,
         },
       ];
     } catch (error) {
