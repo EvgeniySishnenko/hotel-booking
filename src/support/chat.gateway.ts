@@ -1,3 +1,4 @@
+import { OnEvent } from '@nestjs/event-emitter';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -22,12 +23,11 @@ export class ChatGateway
 {
   constructor(private supportService: SupportService) {}
   @WebSocketServer() server: Server;
-
-  @SubscribeMessage('sendMessage')
-  async handleSendMessage(client: Socket, payload): Promise<void> {
-    //  await this.appService.createMessage(payload);
-    this.server.emit('recMessage', payload);
-  }
+  // @SubscribeMessage('sendMessage')
+  // async handleSendMessage(client: Socket, payload): Promise<void> {
+  //   //  await this.appService.createMessage(payload);
+  //   // this.server.emit('recMessage', payload);
+  // }
 
   afterInit(server: Server) {
     console.log(server);
@@ -42,5 +42,12 @@ export class ChatGateway
   handleConnection(client: Socket, ...args: any[]) {
     console.log(`Connected ${client.id}`);
     //Выполняем действия
+  }
+
+  sendMessage() {
+    this.server.sockets.emit('receiveMessage', {
+      text: 'text',
+      author: 'author',
+    });
   }
 }

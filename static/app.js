@@ -1,12 +1,13 @@
-const socket = io('http://localhost:3002');
+const socket = io('http://localhost:3000');
 const msgBox = document.getElementById('exampleFormControlTextarea1');
 const msgCont = document.getElementById('data-container');
 const email = document.getElementById('email');
+console.log('start');
 
 //Получаем старые сообщения с сервера
 const messages = [];
 function getMessages() {
-  fetch('http://localhost:3002/api/chat')
+  fetch('http://localhost:3000/api/chat')
     .then((response) => response.json())
     .then((data) => {
       loadDate(data);
@@ -16,7 +17,7 @@ function getMessages() {
     })
     .catch((err) => console.error(err));
 }
-getMessages();
+// getMessages();
 
 //Когда пользователь нажимает клавишу enter key, отправляем сообщение.
 msgBox.addEventListener('keydown', (e) => {
@@ -40,11 +41,12 @@ function loadDate(data) {
 
 //socket.io
 //Создаём событие sendMessage, чтобы передать сообщение
-function sendMessage(message) {
-  socket.emit('sendMessage', message);
-}
-//Слушаем событие recMessage, чтобы получать сообщения, отправленные пользователями
-socket.on('recMessage', (message) => {
+// function sendMessage(message) {
+//   socket.emit('sendMessage', message);
+// }
+//Слушаем событие receiveMessage, чтобы получать сообщения, отправленные пользователями
+socket.on('receiveMessage', (message) => {
   messages.push(message);
-  loadDate(messages);
+  console.log(messages);
+  // loadDate(messages);
 });
