@@ -128,9 +128,14 @@ export class SupportController {
     }
   }
 
-  @Get('/api/chat')
-  async Chat(@Res() res) {
-    // const messages = await this.appService.getMessages();
-    // res.json(messages);
+  @UseGuards(new RolesGuard([Role.Manager]))
+  @UseGuards(JwtAuthGuard)
+  @Post('/api/manager/support-requests/:id')
+  async closeRequest(@Param('id') id: string) {
+    try {
+      return await this.supportService.closeRequest(id);
+    } catch (error) {
+      return error;
+    }
   }
 }

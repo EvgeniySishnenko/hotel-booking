@@ -220,4 +220,18 @@ export class SupportService {
       return error;
     }
   }
+
+  async closeRequest(id: string) {
+    try {
+      return this.supportRequestModel.findByIdAndUpdate(
+        id,
+        {
+          isActive: false,
+        },
+        { new: true },
+      );
+    } catch (error) {
+      return error;
+    }
+  }
 }
