@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  hotel-booking:
+    build: .
+    ports:
+      - 80:8000
+    environment:
+      - PORT=8000
