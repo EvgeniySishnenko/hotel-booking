@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { HotelModule } from './hotel/hotel.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { SupportModule } from './support/support.module';
+import { ChatGateway } from './support/chat.gateway';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { SupportModule } from './support/support.module';
     SupportModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}

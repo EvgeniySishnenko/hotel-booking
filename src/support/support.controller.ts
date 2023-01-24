@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/decorators/current.user.decorator';
@@ -69,12 +70,18 @@ export class SupportController {
       return error;
     }
   }
-  /**2.5.5. Доступно только пользователям с ролью manager и пользователю с ролью client, который создал обращение. */
-  async sendMessage() {
-    try {
-    } catch (error) {
-      return error;
-    }
+
+  @UseGuards(new RolesGuard([Role.Manager, Role.Client]))
+  @UseGuards(JwtAuthGuard)
+  @Post('/common/support-requests/:id/messages')
+  async sendMessage(
+    @Body() data: CreateSupportRequestDto,
+    @CurrentUser() user: User & { _id: TID },
+    @Param('id') id: string,
+  ) {
+    data['author'] = user._id;
+    data['supportRequest'] = id;
+    return await this.supportService.sendMessage(data);
   }
 
   @UseGuards(new RolesGuard([Role.Manager, Role.Client]))
@@ -92,5 +99,11 @@ export class SupportController {
     } catch (error) {
       return error;
     }
+  }
+
+  @Get('/api/chat')
+  async Chat(@Res() res) {
+    // const messages = await this.appService.getMessages();
+    // res.json(messages);
   }
 }

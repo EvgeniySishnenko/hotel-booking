@@ -213,4 +213,57 @@ export class SupportService {
       return error;
     }
   }
+
+  async sendMessage(message) {
+    const messagesRes = new this.messageModel(message);
+
+    messagesRes.save();
+
+    await this.supportRequestModel.findOneAndUpdate(
+      { _id: message.supportRequest },
+      {
+        $push: { messages: messagesRes._id },
+      },
+      { new: true },
+    );
+
+    return await this.supportRequestModel.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: ['$_id', { $toObjectId: message.supportRequest }],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+
+      {
+        $lookup: {
+          from: 'messages',
+          localField: 'messages',
+          foreignField: '_id',
+          as: 'messages',
+        },
+      },
+      { $unwind: '$messages' },
+      {
+        $project: {
+          _id: 1,
+          createdAt: 1,
+          text: '$messages.text',
+          readAt: '$messages.readAt',
+          'author._id': 1,
+          'author.lastName': 1,
+        },
+      },
+    ]);
+  }
 }
