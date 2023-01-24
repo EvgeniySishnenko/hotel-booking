@@ -54,8 +54,15 @@ export class SupportService {
 
       const supportMessage = await this.supportRequestModel.aggregate([
         { $match: { isActive: Boolean(params.isActive) } },
+        {
+          $lookup: {
+            from: 'messages',
+            localField: 'messages',
+            foreignField: '_id',
+            as: 'messages',
+          },
+        },
         { $unwind: '$messages' },
-
         {
           $addFields: {
             hasNewMessages: {
@@ -210,6 +217,20 @@ export class SupportService {
     } catch (error) {
       console.log(error);
 
+      return error;
+    }
+  }
+
+  async closeRequest(id: string) {
+    try {
+      return this.supportRequestModel.findByIdAndUpdate(
+        id,
+        {
+          isActive: false,
+        },
+        { new: true },
+      );
+    } catch (error) {
       return error;
     }
   }

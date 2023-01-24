@@ -5,8 +5,10 @@ import {
   Param,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { CurrentUser } from 'src/auth/decorators/current.user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -14,12 +16,20 @@ import { TID } from 'src/hotel-room/interfaces/hotel.room.interfaces';
 import { IFindSearchParams } from 'src/hotel/interfaces/find-search.params.interface';
 import { Role } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/schemas/user.schemas';
+import { ChatGateway } from './chat.gateway';
+import { ChartService } from './chat.service';
 import { CreateSupportRequestDto } from './dto/create.support.request.dto';
 import { SupportService } from './support.service';
 
 @Controller('support')
 export class SupportController {
-  constructor(private supportService: SupportService) {}
+  constructor(
+    private supportService: SupportService,
+    private chartService: ChartService,
+    private chatGateway: ChatGateway,
+
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @UseGuards(new RolesGuard([Role.Client]))
   @UseGuards(JwtAuthGuard)
@@ -69,12 +79,36 @@ export class SupportController {
       return error;
     }
   }
-  /**2.5.5. Доступно только пользователям с ролью manager и пользователю с ролью client, который создал обращение. */
-  async sendMessage() {
-    try {
-    } catch (error) {
-      return error;
-    }
+
+  @UseGuards(new RolesGuard([Role.Manager, Role.Client]))
+  @UseGuards(JwtAuthGuard)
+  @Post('/common/support-requests/:id/messages')
+  async sendMessage(
+    @Body() data: CreateSupportRequestDto,
+    @CurrentUser() user: User & { _id: TID },
+    @Param('id') id: string,
+  ) {
+    data['author'] = user._id;
+    data['supportRequest'] = id;
+    this.eventEmitter.emit('message.create', id);
+
+    return await this.chartService.sendMessage(data);
+  }
+
+  @OnEvent('message.create')
+  subscribeToChat(chatId: string) {
+    console.log('подписались на сообщение', chatId);
+    this.chatGateway.sendMessage();
+    // return {
+    //   id: string,
+    //   createdAt: string,
+    //   text: string,
+    //   readAt: string,
+    //   author: {
+    //     id: string,
+    //     name: string,
+    //   },
+    // };
   }
 
   @UseGuards(new RolesGuard([Role.Manager, Role.Client]))
@@ -89,6 +123,17 @@ export class SupportController {
         id,
         data.createdBefore,
       );
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @UseGuards(new RolesGuard([Role.Manager]))
+  @UseGuards(JwtAuthGuard)
+  @Post('/api/manager/support-requests/:id')
+  async closeRequest(@Param('id') id: string) {
+    try {
+      return await this.supportService.closeRequest(id);
     } catch (error) {
       return error;
     }

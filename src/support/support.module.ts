@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from 'src/users/users.module';
+import { ChatGateway } from './chat.gateway';
+import { ChartService } from './chat.service';
 import { Message, MessageSchema } from './schemas/message.schema';
 import {
   SupportRequest,
@@ -11,8 +13,8 @@ import { SupportService } from './support.service';
 
 @Module({
   controllers: [SupportController],
-  providers: [SupportService],
-  exports: [SupportService],
+  providers: [SupportService, ChatGateway, ChartService],
+  exports: [SupportService, ChatGateway, ChartService],
   imports: [
     UsersModule,
     MongooseModule.forFeature([

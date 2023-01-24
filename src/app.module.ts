@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,11 +11,14 @@ import { AuthModule } from './auth/auth.module';
 import { HotelModule } from './hotel/hotel.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { SupportModule } from './support/support.module';
+import { ChatGateway } from './support/chat.gateway';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_CONNECT),
+    EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
     HotelModule,
@@ -21,6 +26,6 @@ import { SupportModule } from './support/support.module';
     SupportModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}
